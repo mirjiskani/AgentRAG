@@ -1,7 +1,6 @@
 import {
   Bell,
   Moon,
-  Search,
   Menu,
   Plus,
 } from "lucide-react";
@@ -40,14 +39,7 @@ export default function Header({
       {/* Right Side */}
       <div className="flex items-center gap-4">
         {/* Search */}
-        {/* <div className="hidden md:flex items-center gap-2 border rounded-lg px-3 py-2">
-          <Search size={16} />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="outline-none text-sm"
-          />
-        </div> */}
+      
 
         {/* Upload Button */}
         <button className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">

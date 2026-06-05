@@ -1,73 +1,143 @@
-# React + TypeScript + Vite
+# AgentRAG Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React-based frontend for AgentRAG - an AI-powered document chat application that allows users to ask questions and get AI-powered answers from their documents.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- 💬 Chat with your documents
+- 📄 Document management and upload
+- 🤖 AI-powered responses
+- 🌙 Dark mode support
+- 📱 Responsive design
+- 🎨 Modern UI with Tailwind CSS
 
-## React Compiler
+## Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Before you begin, ensure you have the following installed:
+- **Node.js** (v16.0.0 or higher)
+- **npm** (v7.0.0 or higher) or **yarn**
+- **Git**
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. Clone the Repository
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone <repository-url>
+cd AgentRAG/frontend
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Install Dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Using npm:
+```bash
+npm install
 ```
+
+Or using yarn:
+```bash
+yarn install
+```
+
+### 3. Install Tailwind CSS
+
+```bash
+npm install tailwindcss @tailwindcss/vite
+```
+
+## Development
+
+### Start the Development Server
+
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:5173`
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── dashboard/
+│   │   ├── ChatPanel.tsx
+│   │   └── DocumentsPanel.tsx
+│   └── layouts/
+│       ├── header.tsx
+│       └── Sidebar.tsx
+├── pages/
+│   ├── Dashboard.tsx
+│   ├── LoginPage.tsx
+│   └── RegisterPage.tsx
+├── routes/
+│   └── AppRouter.tsx
+├── hooks/
+├── services/
+├── types/
+├── utils/
+├── App.tsx
+├── index.css
+└── main.tsx
+```
+
+## Configuration
+
+- **Vite Config**: See [vite.config.ts](vite.config.ts)
+- **TypeScript Config**: See [tsconfig.json](tsconfig.json)
+- **ESLint Config**: See [eslint.config.js](eslint.config.js)
+
+## Technologies Used
+
+- **React** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Lucide React** - Icon library
+
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Create a new branch (`git checkout -b feature/your-feature`)
+2. Make your changes
+3. Commit your changes (`git commit -m 'Add some feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Author
+
+**Mir Khan** - Senior Full Stack Engineer
+
+## Support
+
+For support and questions, please create an issue in the repository or contact the development team.
+
+---
+
+**Happy coding!** 🚀

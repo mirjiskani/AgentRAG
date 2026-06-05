@@ -1,5 +1,5 @@
 import Sidebar from "../components/layouts/Sidebar";
-import Header from "../components/layouts/header";
+import Header from "../components/layouts/Header";
 import DocumentList from "../components/dashboard/DocumentsPanel";
 import ChatWindow from "../components/dashboard/ChatPanel";
 
