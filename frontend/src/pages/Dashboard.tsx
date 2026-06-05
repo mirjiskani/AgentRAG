@@ -1,11 +1,11 @@
 import Sidebar from "../components/layouts/Sidebar";
-import Header from "../components/layouts/Header";
+import Header from "../components/layouts/header";
 import DocumentList from "../components/dashboard/DocumentsPanel";
 import ChatWindow from "../components/dashboard/ChatPanel";
 
 export default function Dashboard() {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-100">
       <Sidebar />
 
       <div className="flex-1 flex flex-col">

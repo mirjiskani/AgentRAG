@@ -28,7 +28,7 @@ const menuItems = [
 export default function Sidebar() {
   return (
     <aside className="w-64 border-r bg-white">
-      <div className="flex items-center gap-2 p-6 border-b">
+      <div className="flex items-center gap-2 p-4 mt-1 border-b">
         <Bot className="text-indigo-600" />
         <h1 className="font-bold text-xl">AgentRAG</h1>
       </div>

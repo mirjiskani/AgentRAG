@@ -15,7 +15,7 @@ export default function Header({
 }: HeaderProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   return (
-    <header className="h-16 bg-white border-b px-6 flex items-center justify-between">
+    <header className="h-16 bg-white border px-6 flex items-center justify-between">
       {/* Left Side */}
       <div className="flex items-center gap-4">
         <button
