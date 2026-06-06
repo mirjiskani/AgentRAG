@@ -5,8 +5,8 @@ export default function ChatWindow() {
   const [message, setMessage] = useState("");
 
   return (
-    <div className="bg-white border rounded-xl flex flex-col h-[80vh]">
-      <div className="border-b p-4">
+    <div className="bg-white border-2 border-gray-200 rounded-xl flex flex-col h-[80vh]">
+      <div className="border-b-2 border-gray-200 p-4">
         <h2 className="font-semibold">
           Chat With Documents
         </h2>
@@ -28,7 +28,7 @@ export default function ChatWindow() {
         </div>
       </div>
 
-      <div className="border-t p-4">
+      <div className="border-t-2 border-gray-200 p-4">
         <div className="flex gap-3">
           <input
             value={message}
@@ -36,7 +36,7 @@ export default function ChatWindow() {
               setMessage(e.target.value)
             }
             placeholder="Ask anything about your documents..."
-            className="flex-1 border rounded-lg px-4 py-3 outline-none focus:border-indigo-500"
+            className="flex-1 border-2 border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-indigo-500"
           />
 
           <button

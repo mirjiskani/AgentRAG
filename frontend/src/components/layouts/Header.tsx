@@ -15,7 +15,7 @@ export default function Header({
 }: HeaderProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   return (
-    <header className="h-16 bg-white border px-6 flex items-center justify-between">
+    <header className="h-16 bg-white border-b-2 border-gray-200 px-6 flex items-center justify-between">
       {/* Left Side */}
       <div className="flex items-center gap-4">
         <button
@@ -64,7 +64,7 @@ export default function Header({
           <img
             src="https://i.pravatar.cc/40"
             alt="profile"
-            className="w-10 h-10 rounded-full border"
+            className="w-10 h-10 rounded-full border-2 border-gray-200"
             onClick={() => setIsProfileOpen(!isProfileOpen)}
           />
 
@@ -79,7 +79,7 @@ export default function Header({
           </div>
 
           {isProfileOpen && (
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white border rounded-lg shadow-lg py-1 z-10">
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white border-2 border-gray-200 rounded-lg shadow-lg py-1 z-10">
               <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 Profile
               </a>

@@ -11,7 +11,6 @@ export default function AppRouter() {
        <Route path="/register" element={<RegisterPage/>} />
        <Route path="/dashboard" element={<DashboardPage/>} />
        {/* Add more routes as needed */}
-
     </Routes>      
     </Router>
   )

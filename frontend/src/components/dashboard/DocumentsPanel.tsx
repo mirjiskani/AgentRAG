@@ -53,14 +53,14 @@ const documents = [
 
 export default function DocumentList() {
   return (
-    <div className="bg-white rounded-xl border h-full">
-      <div className="p-4 border-b">
+    <div className="bg-white rounded-xl border-2 border-gray-200 h-full">
+      <div className="p-4 border-b-2 border-gray-200">
         {/* <h2 className="font-semibold">
           Documents
         </h2> */}
         <div className="flex gap-3">
-        <input placeholder="Search documents..." className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />  
-        <select className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500">
+        <input placeholder="Search documents..." className="w-full border-2 border-gray-200 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />  
+        <select className="w-full border-2 border-gray-200 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500">
           <option value="">Filter by status</option>
           <option value="ALL">All</option>
           <option value="READY">Ready</option>
@@ -79,7 +79,7 @@ export default function DocumentList() {
         {documents.map((doc) => (
           <div
             key={doc.id}
-            className="p-4 border rounded-lg hover:border-indigo-500 cursor-pointer transition hover:bg-gray-100 flex justify-between items-center"
+            className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 cursor-pointer transition hover:bg-gray-100 flex justify-between items-center"
           >
             <div className="flex justify-between items-center">
               <div className="flex gap-3">
