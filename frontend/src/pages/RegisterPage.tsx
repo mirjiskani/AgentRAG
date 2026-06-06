@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
-import { useState } from 'react'; 
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from 'react';
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useRegister } from "../hooks/register";
+import toast from "react-hot-toast";
 
 interface RegisterForm {
   name: string;
@@ -16,8 +17,9 @@ export default function RegisterPage() {
   const [isEightChar, setIsEightChar] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState(false);
   const registerMutation = useRegister();
+  const navigate = useNavigate();
 
-  
+
   const [form, setForm] = useState<RegisterForm>({
     name: "",
     email: "",
@@ -26,28 +28,47 @@ export default function RegisterPage() {
   });
 
   const handleRegister = async () => {
-    await registerMutation.mutateAsync({
-      name: form.name,
-      email: form.email,
-      password: form.password,
-      confirmPassword: form.confirmPassword
-    });
+    try {
+      await registerMutation.mutate({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        // confirmPassword: form.confirmPassword
+      },
+        {
+          onSuccess: (response) => {
+            // Redirect to login page or dashboard
+            toast.success(response.message);
+            setTimeout(() => {
+              navigate('/login');
+            }, 2000);
+          },
+          onError: (error) => {
+            toast.error(error.message);
+            console.error('Registration failed:', error);
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Registration failed:', error);
+      toast.error('Registration failed. Please try again.');
+    }
   };
 
 
   const setPassword = (value: string): void => {
-    if(value.length >= 8) {
+    if (value.length >= 8) {
       setIsEightChar(true);
       setForm({ ...form, password: value });
-    }else{
+    } else {
       setIsEightChar(false);
     }
   }
 
-  const checkConfirmPassword  = (value: string): void => {
-    if(value === form.password) {
+  const checkConfirmPassword = (value: string): void => {
+    if (value === form.password) {
       setConfirmPassword(true);
-    }else{
+    } else {
       setConfirmPassword(false);
     }
   }
@@ -135,7 +156,7 @@ export default function RegisterPage() {
                 name="password"
                 onKeyUp={(e) => setPassword(e.currentTarget.value)}
                 className="w-full border rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-violet-500"
-             />
+              />
               <button
                 type="button"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -144,7 +165,7 @@ export default function RegisterPage() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            
+
             <p className="text-md text-gray-500 mt-1">
               <span className="text-green-500" style={{ display: isEightChar ? 'inline' : 'none' }}>✓</span> <span className="text-red-500" style={{ display: !isEightChar ? 'inline' : 'none' }}>x</span> Must be at least 8 characters long
             </p>
@@ -178,17 +199,17 @@ export default function RegisterPage() {
               >
                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
-               
-            <p className="text-md text-gray-500 mt-1">
-              <span className="text-green-500" style={{ display: confirmPassword ? 'inline' : 'none' }}>✓</span> <span className="text-red-500" style={{ display: !confirmPassword ? 'inline' : 'none' }}>x</span> Password match confirmation
-            </p>
+
+              <p className="text-md text-gray-500 mt-1">
+                <span className="text-green-500" style={{ display: confirmPassword ? 'inline' : 'none' }}>✓</span> <span className="text-red-500" style={{ display: !confirmPassword ? 'inline' : 'none' }}>x</span> Password match confirmation
+              </p>
             </div>
           </div>
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white font-medium py-3 rounded-lg transition"
+            className="w-full bg-violet-600 hover:bg-violet-700 text-white font-medium py-3 rounded-lg transition cursor-pointer"
           >
             Create Account
           </button>

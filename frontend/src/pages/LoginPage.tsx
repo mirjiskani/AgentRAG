@@ -1,23 +1,47 @@
-import {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {Eye, EyeOff, Lock, Mail} from "lucide-react";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { useLogin } from "../hooks/userLogin";
+import toast from "react-hot-toast";
+import type { LoginData } from "../types/auth";
 
 export default function LoginPage() {
-    const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
-    function handleLogin(): void {
-        try {
-            navigate('/dashboard'); // Redirect to dashboard on successful login
-        } catch (error) {
-            console.error('Login failed:', error);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const loginMutation = useLogin();
+  const [form, setForm] = useState<LoginData>({
+    email: '',
+    password: ''
+  });
+
+  const handleLogin = async () => {
+    try {
+      await loginMutation.mutateAsync({
+        email: form.email,
+        password: form.password
+      },
+        {
+          onSuccess: (response) => {
+            toast.success(response.message);
+            setTimeout(() => {
+              navigate('/dashboard'); // Redirect to dashboard on successful login
+            }, 3000);
+          },
+          onError: (error) => {
+            toast.error(error.message);
             // Optionally, display an error message to the user
-        }
-
+          }
+        });
+    } catch (error) {
+      toast.error('Login failed');
+      console.error('Login failed:', error);
+      // Optionally, display an error message to the user
     }
+  }
 
-    return (
+  return (
     <div className="min-h-screen flex items-center justify-center">
-        <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
+      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
 
         <h1 className="text-center text-4xl font-bold mb-2">
           Agent<span className="text-violet-600">RAG</span>
@@ -31,7 +55,7 @@ export default function LoginPage() {
           Sign in to continue
         </p>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
 
           {/* Email */}
           <div>
@@ -47,6 +71,8 @@ export default function LoginPage() {
 
               <input
                 type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="Enter your email"
                 className="w-full border rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-violet-500"
               />
@@ -67,9 +93,11 @@ export default function LoginPage() {
 
               <input
                 type={showPassword ? "text" : "password"}
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="Create a password"
                 className="w-full border rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-violet-500"
-             />
+              />
               <button
                 type="button"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -78,10 +106,10 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            </div>
+          </div>
           <button
-          onClick={() => handleLogin()}
-            className="w-full bg-violet-600 text-white py-3 rounded-lg hover:bg-violet-700"
+            onClick={() => handleLogin()}
+            className="w-full bg-violet-600 text-white py-3 rounded-lg hover:bg-violet-700 cursor-pointer"
           >
             Sign In
           </button>

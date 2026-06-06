@@ -3,7 +3,7 @@ import axios from 'axios';
 let _token: string | null = null;
 
 const api = axios.create({
-  baseURL: import.meta.env.API_BASE_URL || 'http://localhost:8000/api',
+  baseURL: import.meta.env.API_BASE_URL || 'http://localhost:3000/api',
   headers: {
     'Content-Type': 'application/json',
   },
