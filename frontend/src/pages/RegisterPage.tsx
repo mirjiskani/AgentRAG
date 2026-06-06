@@ -44,14 +44,14 @@ export default function RegisterPage() {
             }, 2000);
           },
           onError: (error) => {
-            toast.error(error.message);
+            toast.error('Registration failed, please try again.');
             console.error('Registration failed:', error);
           }
         }
       );
     } catch (error) {
       console.error('Registration failed:', error);
-      toast.error('Registration failed. Please try again.');
+      // toast.error('Registration failed. Please try again.');//
     }
   };
 

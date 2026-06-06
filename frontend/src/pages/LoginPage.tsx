@@ -28,12 +28,12 @@ export default function LoginPage() {
             }, 3000);
           },
           onError: (error) => {
-            toast.error(error.message);
+            toast.error("login failed");
             // Optionally, display an error message to the user
           }
         });
     } catch (error) {
-      toast.error('Login failed');
+      // toast.error('Login failed');
       console.error('Login failed:', error);
       // Optionally, display an error message to the user
     }
