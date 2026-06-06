@@ -14,7 +14,7 @@ export class AuthController {
         return this.authService.register(registerDto);
     }
     @Post('login')
-    async login(@Body() loginDto: LoginDto, @Res() res: Response) {
+    async login(@Body() loginDto: LoginDto, @Res({passthrough: true}) res: Response) {
         const result = await this.authService.login(loginDto);
         res.cookie(
             'refresh_token',
@@ -26,7 +26,8 @@ export class AuthController {
                 7 * 24 * 60 * 60 * 1000,
             },
         );
-        return result;
+        const { refreshToken, ...data } = result;
+        return data;
     }
     @Post('refresh')
     async refresh(@Body() refreshToken: string) {
