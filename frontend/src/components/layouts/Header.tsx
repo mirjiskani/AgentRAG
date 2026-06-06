@@ -4,7 +4,7 @@ import {
   Menu,
   Plus,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface HeaderProps {
   onToggleSidebar: () => void;
@@ -14,6 +14,24 @@ export default function Header({
   onToggleSidebar,
 }: HeaderProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, []);
+ 
   return (
     <header className="h-16 bg-white border-b-2 border-gray-200 px-6 flex items-center justify-between">
       {/* Left Side */}
@@ -60,12 +78,13 @@ export default function Header({
         </button>
 
         {/* Profile */}
-        <div className="relative flex items-center gap-3 cursor-pointer" onClick={() => setIsProfileOpen(!isProfileOpen)}>
+        <div ref={profileRef} className="relative flex items-center gap-3 cursor-pointer" 
+            onClick={() => setIsProfileOpen(true)}
+         >
           <img
             src="https://i.pravatar.cc/40"
             alt="profile"
             className="w-10 h-10 rounded-full border-2 border-gray-200"
-            onClick={() => setIsProfileOpen(!isProfileOpen)}
           />
 
           <div className="hidden lg:block">
