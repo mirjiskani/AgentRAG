@@ -83,12 +83,20 @@ export class AuthService {
         
         // Generate access token
 
-        const _accessToken = await this.jwtService.signAsync(payload);
+        const tokens = await this.generateToken(payload);
+        await this.prisma.session.create({
+            data: {
+                userId: user.id,
+                refreshToken: tokens.refreshToken,
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+            },
+        });
         
         return {
             success: true,
             message: 'User logged in successfully',
-            accessToken: _accessToken,
+            accessToken: tokens.accessToken,
+            refreshToken: tokens.refreshToken,
             user: {
                 id: user.id,
                 name: user.name,
@@ -97,5 +105,43 @@ export class AuthService {
             },
         };
     }
+    
+    // Generate token
+   private async generateToken(payload: { id: number; email: string }) {
+       
+    // Generate access token for short term use
+        const accessToken = await this.jwtService.signAsync(payload, {
+            expiresIn: '15m', // 15 minutes
+        });
+        // Generate refresh token for long term use
+        const refreshToken = await this.jwtService.signAsync(payload, {
+            expiresIn: '7d', // 7 days
+        });
+        return { accessToken, refreshToken };
+    }
 
+    async accessRefreshToken(refreshToken: string) {
+        try {
+            const session = await this.prisma.session.findFirst({
+                where: {
+                    refreshToken: refreshToken,
+                },
+                include: {
+                    user: true,
+                },
+            });
+            if (!session) {
+                throw new BadRequestException('Invalid refresh token');
+            }
+            const newTokens = await this.generateToken({ id: session.user.id, email: session.user.email });
+            return {
+                success: true,
+                message: 'Token refreshed successfully',
+                accessToken: newTokens.accessToken,
+                refreshToken: newTokens.refreshToken,
+            };
+        } catch (error) {
+            throw new BadRequestException('Invalid refresh token');
+        }
+    }
 }
