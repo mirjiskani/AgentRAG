@@ -91,18 +91,18 @@ export class AuthService {
                 expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
             },
         });
-        
+    
         return {
             success: true,
             message: 'User logged in successfully',
             accessToken: tokens.accessToken,
-            refreshToken: tokens.refreshToken,
             user: {
                 id: user.id,
                 name: user.name,
                 email: user.email,
                 createdAt: user.createdAt
             },
+            refreshToken: tokens.refreshToken,
         };
     }
     
@@ -143,5 +143,19 @@ export class AuthService {
         } catch (error) {
             throw new BadRequestException('Invalid refresh token');
         }
+    }
+
+    // logout deletes the refresh token from the database
+    async logout(refreshToken: string) {
+        await this.prisma.session.deleteMany({
+            where: {
+                refreshToken: refreshToken,
+            },
+        });
+        
+        return {
+            success: true,
+            message: 'User logged out successfully',
+        };
     }
 }
