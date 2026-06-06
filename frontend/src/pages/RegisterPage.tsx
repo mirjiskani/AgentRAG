@@ -1,10 +1,30 @@
 import { Link } from "react-router-dom";
-import {useState} from 'react'; 
+import { useState, useEffect } from 'react'; 
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isEightChar, setIsEightChar] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const handleRegister = () => {
+
+      toast.error("Registration not implemented yet");
+   
+  };
+
+
+  function setPassword(value: string): void {
+    if(value.length >= 8) {
+      setIsEightChar(true);
+    }else{
+      setIsEightChar(false);
+    }
+  }
+
+  function setConfirmPasswordMatch(value: string): void {
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
@@ -39,6 +59,7 @@ export default function RegisterPage() {
 
               <input
                 type="text"
+                name="fullname"
                 placeholder="Enter your full name"
                 className="w-full border rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-violet-500"
               />
@@ -59,6 +80,7 @@ export default function RegisterPage() {
 
               <input
                 type="email"
+                name="email"
                 placeholder="Enter your email"
                 className="w-full border rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-violet-500"
               />
@@ -80,6 +102,8 @@ export default function RegisterPage() {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Create a password"
+                name="password"
+                onKeyUp={(e) => setPassword(e.currentTarget.value)}
                 className="w-full border rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-violet-500"
              />
               <button
@@ -90,9 +114,9 @@ export default function RegisterPage() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-
-            <p className="text-xs text-gray-500 mt-1">
-              Must be at least 8 characters long
+            
+            <p className="text-md text-gray-500 mt-1">
+              <span className="text-green-500" style={{ display: isEightChar ? 'inline' : 'none' }}>✓</span> <span className="text-red-500" style={{ display: !isEightChar ? 'inline' : 'none' }}>x</span> Must be at least 8 characters long
             </p>
           </div>
 
@@ -111,6 +135,8 @@ export default function RegisterPage() {
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm your password"
+                name="confirmPassword"
+                onKeyUp={(e) => setConfirmPasswordMatch(e.currentTarget.value)}
                 className="w-full border rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-violet-500"
               />
               <button
@@ -120,6 +146,10 @@ export default function RegisterPage() {
               >
                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
+               
+            <p className="text-md text-gray-500 mt-1">
+              <span className="text-green-500" style={{ display: isEightChar ? 'inline' : 'none' }}>✓</span> <span className="text-red-500" style={{ display: !isEightChar ? 'inline' : 'none' }}>x</span> Password match confirmation
+            </p>
             </div>
           </div>
 
