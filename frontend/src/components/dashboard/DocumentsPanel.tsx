@@ -1,4 +1,4 @@
-import { FileText,Search } from "lucide-react";
+import { FileText } from "lucide-react";
 
 const documents = [
   {
@@ -66,11 +66,6 @@ export default function DocumentList() {
           <option value="READY">Ready</option>
           <option value="PROCESSING">Processing</option>
         </select>
-        <button
-          className="bg-indigo-100 text-white px-4 rounded-lg hover:bg-indigo-100 cursor-pointer transition"
-        >
-          <Search size={30} className="text-gray-500" />
-        </button>
         </div>
 
       </div>
