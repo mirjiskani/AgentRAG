@@ -1,29 +1,55 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from 'react'; 
+import { useState } from 'react'; 
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { useRegister } from "../hooks/register";
+
+interface RegisterForm {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isEightChar, setIsEightChar] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const handleRegister = () => {
+  const registerMutation = useRegister();
 
-      toast.error("Registration not implemented yet");
-   
+  
+  const [form, setForm] = useState<RegisterForm>({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
+  });
+
+  const handleRegister = async () => {
+    await registerMutation.mutateAsync({
+      name: form.name,
+      email: form.email,
+      password: form.password,
+      confirmPassword: form.confirmPassword
+    });
   };
 
 
-  function setPassword(value: string): void {
+  const setPassword = (value: string): void => {
     if(value.length >= 8) {
       setIsEightChar(true);
+      setForm({ ...form, password: value });
     }else{
       setIsEightChar(false);
     }
   }
 
-  function setConfirmPasswordMatch(value: string): void {
+  const checkConfirmPassword  = (value: string): void => {
+    if(value === form.password) {
+      setConfirmPassword(true);
+    }else{
+      setConfirmPassword(false);
+    }
   }
 
   return (
@@ -44,7 +70,7 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); handleRegister(); }}>
           {/* Full Name */}
           <div>
             <label className="block text-sm font-medium mb-2">
@@ -58,6 +84,8 @@ export default function RegisterPage() {
               />
 
               <input
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
                 type="text"
                 name="fullname"
                 placeholder="Enter your full name"
@@ -79,6 +107,8 @@ export default function RegisterPage() {
               />
 
               <input
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
                 type="email"
                 name="email"
                 placeholder="Enter your email"
@@ -133,10 +163,12 @@ export default function RegisterPage() {
               />
 
               <input
+                value={form.confirmPassword}
+                onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm your password"
                 name="confirmPassword"
-                onKeyUp={(e) => setConfirmPasswordMatch(e.currentTarget.value)}
+                onKeyUp={(e) => checkConfirmPassword(e.currentTarget.value)}
                 className="w-full border rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-violet-500"
               />
               <button
@@ -148,7 +180,7 @@ export default function RegisterPage() {
               </button>
                
             <p className="text-md text-gray-500 mt-1">
-              <span className="text-green-500" style={{ display: isEightChar ? 'inline' : 'none' }}>✓</span> <span className="text-red-500" style={{ display: !isEightChar ? 'inline' : 'none' }}>x</span> Password match confirmation
+              <span className="text-green-500" style={{ display: confirmPassword ? 'inline' : 'none' }}>✓</span> <span className="text-red-500" style={{ display: !confirmPassword ? 'inline' : 'none' }}>x</span> Password match confirmation
             </p>
             </div>
           </div>
