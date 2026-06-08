@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { getToken } from '../lib/tokes-store';
 
-let _token: string | null = null;
+// let _token: string | null = null;
 
 const api = axios.create({
   baseURL: import.meta.env.API_BASE_URL || 'http://localhost:3000/api',
@@ -9,8 +10,8 @@ const api = axios.create({
   },
 });
 
+const token = getToken();
 api.interceptors.request.use((config) => {
-  const token = _token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -22,7 +23,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Handle unauthorized access
-      _token = null;
+      // _token = null;
     }
     return Promise.reject(error);
   }

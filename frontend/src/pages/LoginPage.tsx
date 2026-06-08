@@ -4,6 +4,8 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useLogin } from "../hooks/userLogin";
 import toast from "react-hot-toast";
 import type { LoginData } from "../types/auth";
+import { setToken } from '../lib/tokes-store';
+import { useAuth } from '../context/authContext';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +15,7 @@ export default function LoginPage() {
     email: '',
     password: ''
   });
+  const { setAccessToken } = useAuth()
 
   const handleLogin = async () => {
     try {
@@ -22,6 +25,8 @@ export default function LoginPage() {
       },
         {
           onSuccess: (response) => {
+            setAccessToken(response.data.accessToken);
+            setToken(response.data.accessToken);
             toast.success(response.message);
             setTimeout(() => {
               navigate('/dashboard'); // Redirect to dashboard on successful login
