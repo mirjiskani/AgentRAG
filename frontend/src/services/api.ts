@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from '../lib/tokes-store';
+import { getToken } from '../lib/tokens-store';
 
 // let _token: string | null = null;
 

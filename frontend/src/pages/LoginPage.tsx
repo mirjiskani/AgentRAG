@@ -4,7 +4,7 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useLogin } from "../hooks/userLogin";
 import toast from "react-hot-toast";
 import type { LoginData } from "../types/auth";
-import { setToken } from '../lib/tokes-store';
+import { setToken } from '../lib/tokens-store';
 import { useAuth } from '../context/authContext';
 
 export default function LoginPage() {
@@ -32,7 +32,7 @@ export default function LoginPage() {
               navigate('/dashboard'); // Redirect to dashboard on successful login
             }, 3000);
           },
-          onError: (error) => {
+          onError: () => {
             toast.error("login failed");
             // Optionally, display an error message to the user
           }

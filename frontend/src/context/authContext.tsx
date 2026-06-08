@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { refreshToken } from "../services/auth";
-import { setToken } from "../lib/tokes-store";
+import { setToken } from "../lib/tokens-store";
 
 interface authContextType {
     accessToken:string,
@@ -8,6 +8,7 @@ interface authContextType {
     loading: boolean;
 }
 
+/* eslint-disable react-refresh/only-export-components */
 export const AuthContext = createContext<authContextType>({} as authContextType);
 
 

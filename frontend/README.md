@@ -4,7 +4,10 @@ A modern React-based frontend for AgentRAG - an AI-powered document chat applica
 
 ## Features
 
-- 💬 Chat with your documents
+- � User authentication (login/register)
+- 🔄 JWT token management with auto-refresh
+- 🛡️ Protected routes for authenticated users
+- �💬 Chat with your documents
 - 📄 Document management and upload
 - 🤖 AI-powered responses
 - 🌙 Dark mode support
@@ -78,15 +81,24 @@ src/
 │   └── layouts/
 │       ├── header.tsx
 │       └── Sidebar.tsx
+├── context/
+│   └── authContext.tsx
+├── hooks/
+│   └── userLogin.ts
+├── lib/
+│   └── tokens-store.ts
 ├── pages/
 │   ├── Dashboard.tsx
 │   ├── LoginPage.tsx
 │   └── RegisterPage.tsx
 ├── routes/
-│   └── AppRouter.tsx
-├── hooks/
+│   ├── AppRouter.tsx
+│   └── protectedRoutes.tsx
 ├── services/
+│   ├── api.ts
+│   └── auth.ts
 ├── types/
+│   └── auth.ts
 ├── utils/
 ├── App.tsx
 ├── index.css
@@ -106,6 +118,12 @@ src/
 - **Vite** - Build tool and dev server
 - **Tailwind CSS** - Utility-first CSS framework
 - **Lucide React** - Icon library
+- **React Router DOM** - Client-side routing
+- **TanStack React Query** - Data fetching and state management
+- **Axios** - HTTP client
+- **React Hook Form** - Form management
+- **React Hot Toast** - Toast notifications
+- **clsx** - Conditional className utility
 
 ## Scripts
 
@@ -125,10 +143,6 @@ Contributions are welcome! Please follow these steps:
 3. Commit your changes (`git commit -m 'Add some feature'`)
 4. Push to the branch (`git push origin feature/your-feature`)
 5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Author
 
