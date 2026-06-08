@@ -32,8 +32,15 @@ async function bootstrap() {
     .setTitle('AgentRAG API')
     .setDescription('AgentRAG Backend APIs')
     .setVersion('1.0')
-    .addBearerAuth()
-    .build();
+    .addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+    },  
+    'access-token',
+    ).build();
 
   const document =
     SwaggerModule.createDocument(
