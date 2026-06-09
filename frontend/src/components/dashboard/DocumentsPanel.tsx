@@ -1,11 +1,13 @@
-import { FileText, Loader2, Plus } from "lucide-react";
-import { useGetDocuments, useUploadDocument } from "../../hooks/documents";
+import { FileText, Loader2, Plus, Trash2 } from "lucide-react";
+import { useDeleteDocument, useGetDocuments, useUploadDocument } from "../../hooks/documents";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 
 export default function DocumentList() {
   const { data: documents, isLoading, error } = useGetDocuments();
   const { mutateAsync: uploadDocument, isPending: isUploading } = useUploadDocument();
+  const { mutateAsync: deleteDocument, isPending: isDeleting } = useDeleteDocument();
+  const allowedFileTypes = ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -20,12 +22,18 @@ export default function DocumentList() {
     return <div>Error loading documents.</div>;
   }
 
+
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
     if (!file) return; 
     try {
+      const fileType = file.type;
+      if (!allowedFileTypes.includes(fileType)) {
+        toast.error("Invalid file type");
+        return;
+      }
       const result = await uploadDocument(file);
       if (result?.success) {
         toast.success("Document uploaded successfully");
@@ -33,6 +41,20 @@ export default function DocumentList() {
     } catch (error) {
       console.error(error);
       toast.error("Failed to upload document");
+    }
+  };
+
+  const onDeleteDocument = async (documentId: number) => {
+    try {
+      const result = await deleteDocument(documentId);
+      if (result?.success) {
+        toast.success("Document deleted successfully");
+      }else{
+        toast.error(result?.message || "Failed to delete document");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete document");
     }
   };
 
@@ -84,12 +106,14 @@ export default function DocumentList() {
             <Loader2 size={24} className="animate-spin" />
           </div>
         )}
-        {!isLoading && documents?.data.map((doc) => (
-          <div
-            key={doc.id}
-            className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 cursor-pointer transition hover:bg-gray-100 flex justify-between items-center"
-          >
-            <div className="flex justify-between items-center">
+        {isDeleting && (
+          <div className="flex items-center justify-center h-full">
+            <Loader2 size={24} className="animate-spin" />
+          </div>
+        )}
+        {!isLoading && !isDeleting && documents?.data.map((doc) => (
+          
+            <div className="flex justify-between items-center p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 cursor-pointer transition hover:bg-gray-100 " key={doc.id}>
               <div className="flex gap-3">
                 <FileText size={20} />
 
@@ -108,8 +132,13 @@ export default function DocumentList() {
               >
                 {/* {doc.status} */} Pending
               </span>
+              <button
+                onClick={() => onDeleteDocument(doc.id)}
+                className="text-red-600 hover:text-red-800 cursor-pointer ml-auto"
+              >
+                <Trash2 size={20} />
+              </button>
             </div>
-          </div>
         ))}
       </div>
     </div>

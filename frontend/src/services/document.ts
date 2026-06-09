@@ -17,3 +17,8 @@ export const getDocuments = async () => {
   const response = await api.get("/documents/list");
   return response.data;
 };
+
+export const deleteDocument = async (documentId: number) => {
+  const response = await api.delete(`/documents/delete/${documentId}`);
+  return response.data;
+};
