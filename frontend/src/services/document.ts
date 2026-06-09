@@ -1,10 +1,10 @@
-import axios from "axios";
+import api from "./api";
 
 export const uploadDocument = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
   
-  const response = await axios.post("/api/documents", formData, {
+  const response = await api.post("/documents/upload", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -14,6 +14,6 @@ export const uploadDocument = async (file: File) => {
 };
 
 export const getDocuments = async () => {
-  const response = await axios.get("/api/documents");
+  const response = await api.get("/documents/list");
   return response.data;
 };

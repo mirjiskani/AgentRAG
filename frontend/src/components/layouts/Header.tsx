@@ -59,12 +59,6 @@ export default function Header({
         {/* Search */}
       
 
-        {/* Upload Button */}
-        <button className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-          <Plus size={18} />
-          Upload Document
-        </button>
-
         {/* Dark Mode */}
         <button className="p-2 rounded-lg hover:bg-gray-100">
           <Moon size={18} />

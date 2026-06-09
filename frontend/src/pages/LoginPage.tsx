@@ -25,8 +25,8 @@ export default function LoginPage() {
       },
         {
           onSuccess: (response) => {
-            setAccessToken(response.data.accessToken);
-            setToken(response.data.accessToken);
+            setAccessToken(response.accessToken);
+            setToken(response.accessToken);
             toast.success(response.message);
             setTimeout(() => {
               navigate('/dashboard'); // Redirect to dashboard on successful login

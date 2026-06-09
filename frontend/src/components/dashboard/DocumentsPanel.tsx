@@ -1,77 +1,90 @@
-import { FileText } from "lucide-react";
-
-const documents = [
-  {
-    id: 1,
-    name: "NestJS Guide.pdf",
-    status: "READY",
-  },
-  {
-    id: 2,
-    name: "OpenAI Docs.pdf",
-    status: "PROCESSING",
-  },
-  {
-    id: 3,
-    name: "OpenAI Docs.pdf",
-    status: "PROCESSING",
-  },
-  {
-    id: 4,
-    name: "OpenAI Docs.pdf",
-    status: "PROCESSING",
-  },
-  {
-    id: 5,
-    name: "OpenAI Docs.pdf",
-    status: "PROCESSING",
-  },
-  {
-    id: 6,
-    name: "CV.pdf",
-    status: "READY",
-  },{
-    id: 7,
-    name: "Education Credential.pdf",
-    status: "PENDING",
-  },
-  {
-    id: 8,
-    name: "OpenAI Docs.pdf",
-    status: "PROCESSING",
-  },{
-    id: 9,
-    name: "OpenAI Docs.pdf",
-    status: "PROCESSING",
-  },
-  {
-    id: 10,
-    name: "OpenAI Docs.pdf",
-    status: "PROCESSING",
-  },
-];
+import { FileText, Loader2, Plus } from "lucide-react";
+import { useGetDocuments, useUploadDocument } from "../../hooks/documents";
+import { useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 
 export default function DocumentList() {
+  const { data: documents, isLoading, error } = useGetDocuments();
+  const { mutateAsync: uploadDocument, isPending: isUploading } = useUploadDocument();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  useEffect(() => {
+    if (error) {
+      toast.error("Failed to fetch documents");
+    }
+  }, [error]);
+
+  
+  if (error) {
+    return <div>Error loading documents.</div>;
+  }
+
+  const handleFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return; 
+    try {
+      const result = await uploadDocument(file);
+      if (result?.success) {
+        toast.success("Document uploaded successfully");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to upload document");
+    }
+  };
+
+
   return (
     <div className="bg-white rounded-xl border-2 border-gray-200 h-full">
       <div className="p-4 border-b-2 border-gray-200">
-        {/* <h2 className="font-semibold">
-          Documents
-        </h2> */}
-        <div className="flex gap-3">
-        <input placeholder="Search documents..." className="w-full border-2 border-gray-200 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />  
-        <select className="w-full border-2 border-gray-200 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500">
-          <option value="">Filter by status</option>
-          <option value="ALL">All</option>
-          <option value="READY">Ready</option>
-          <option value="PROCESSING">Processing</option>
-        </select>
+        <div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+            className="flex cursor-pointer items-center justify-center gap-2 w-full mb-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-70"
+          >
+            {isUploading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Plus size={18} />
+                Upload Document
+              </>
+            )}
+          </button>
         </div>
 
+        <div className="flex gap-3">
+          <input placeholder="Search documents..." className="w-full border-2 border-gray-200 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />
+          <select className="w-full border-2 border-gray-200 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="">Filter by status</option>
+            <option value="ALL">All</option>
+            <option value="READY">Ready</option>
+            <option value="PROCESSING">Processing</option>
+          </select>
+        </div>
       </div>
 
       <div className="p-4 space-y-3 overflow-y-auto h-[70vh]">
-        {documents.map((doc) => (
+        {isLoading && (
+          <div className="flex items-center justify-center h-full">
+            <Loader2 size={24} className="animate-spin" />
+          </div>
+        )}
+        {!isLoading && documents?.data.map((doc) => (
           <div
             key={doc.id}
             className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 cursor-pointer transition hover:bg-gray-100 flex justify-between items-center"
@@ -82,19 +95,18 @@ export default function DocumentList() {
 
                 <div>
                   <h3 className="font-medium">
-                    {doc.name}
+                    {doc.fileName}
                   </h3>
                 </div>
               </div>
 
               <span
-                className={`text-md px-4 py-1 mx-2 rounded-full h-full ${
-                  doc.status === "READY"
+                className={`text-md px-4 py-1 mx-2 rounded-full h-full ${doc.status === "READY"
                     ? "bg-green-100 text-green-600"
                     : "bg-yellow-100 text-yellow-600"
-                }`}
+                  }`}
               >
-                {doc.status}
+                {/* {doc.status} */} Pending
               </span>
             </div>
           </div>
