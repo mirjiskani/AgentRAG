@@ -133,6 +133,17 @@ This architecture was chosen to align with modern AI engineering practices and p
 # Start Qdrant using Docker
 docker run -d --name qdrant -p 6333:6333 qdrant/qdrant
 ```
+## Install qdrant client
+
+```bash
+npm install @qdrant/js-client-rest
+
+```
+
+## Qdrant Dashboard
+
+http://localhost:6333/dashboard
+
 
 ## API Documentation
 
