@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from 'multer';
@@ -45,9 +45,19 @@ export class DocumentsController {
 
         }
     ))
-    uploadFile(@UploadedFile() file: File, @Req() req: any) {
+    async uploadFile(@UploadedFile() file: File, @Req() req: any) {
         // TODO: Get user from request
         const user = req.user.userId;
-        return this.documentsService.uploadFile(file, user);
+        return await this.documentsService.uploadFile(file, user);
+    }
+
+
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth('access-token')
+    @Get('list')
+    async listDocuments(@Req() req: any) {
+        // TODO: Get user from request
+        const user = req.user.userId;
+        return await this.documentsService.listDocuments(user);
     }
 }

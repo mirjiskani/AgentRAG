@@ -25,4 +25,17 @@ export class DocumentsService {
         };
     }
 
+    async listDocuments(userId: number) {
+        const documents = await this.prisma.document.findMany({
+            where: {
+                userId,
+            },
+        });
+
+        return {
+            success: true,
+            message: 'Documents listed successfully',
+            data: documents,
+        };
+    }
 }
