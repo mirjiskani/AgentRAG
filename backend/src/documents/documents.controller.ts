@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from 'multer';
@@ -60,4 +60,20 @@ export class DocumentsController {
         const user = req.user.userId;
         return await this.documentsService.listDocuments(user);
     }
+    
+    @UseGuards(JwtAuthGuard)
+    @Delete('delete/:documentId')
+    async deleteDocument(@Req() req: any, @Param('documentId') documentId: number) {
+        // TODO: Get user from request
+        const user = req.user.userId;
+        return await this.documentsService.deleteDocument(documentId, user);
+    }
+    // @UseGuards(JwtAuthGuard)
+    // @ApiBearerAuth('access-token')
+    // @Get('chunks/:documentId')
+    // async getDocumentChunks(@Req() req: any, @Param('documentId') documentId: number) {
+    //     // TODO: Get user from request
+    //     const user = req.user.userId;
+    //     return await this.documentsService.getDocumentChunks(documentId, user);
+    // }
 }

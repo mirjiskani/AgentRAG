@@ -3,51 +3,74 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
-
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+// User model for storing user information
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  password  String
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  name     String
+  password String
 
   sessions  Session[]
-  documents  Document[]
-  
+  documents Document[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Session {
-  id           Int      @id @default(autoincrement())
+// Session model for storing user sessions
 
-  userId       Int
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Session {
+  id Int @id @default(autoincrement())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   refreshToken String
 
-  expiresAt    DateTime
+  expiresAt DateTime
 
-  createdAt    DateTime @default(now())
+  createdAt DateTime @default(now())
 }
 
+// Document model for storing document metadata
+
 model Document {
-  id          Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  fileName    String
-  filePath    String
-  mimeType    String
-  size        Int
+  fileName String
+  filePath String
+  mimeType String
+  size     Int
 
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime @default(now())
+  // Add relation to document chunks
+  chunks DocumentChunk[]
+
+  createdAt DateTime @default(now())
+}
+
+// Document chunk model for storing document content in chunks
+// This model stores the actual content of documents in smaller chunks for better retrieval
+
+model DocumentChunk {
+  id Int @id @default(autoincrement())
+
+  documentId Int
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  content String
+
+  createdAt DateTime @default(now())
 }

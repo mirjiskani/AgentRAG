@@ -23,6 +23,12 @@ $ npm install
 - **class-validator**: DTO validation
 - **class-transformer**: Data transformation
 - **postgresql**: Database (via Prisma)
+- **pdf-parse**: PDF parsing library for extracting text from PDF files // replaceing 
+- **multer**: File upload handling
+- **mammoth**: DOCX parsing library for extracting text from DOCX files
+
+
+
 
 ## Environment Variables
 
@@ -49,6 +55,83 @@ $ npx prisma migrate dev
 
 # Open Prisma Studio (optional)
 $ npx prisma studio
+```
+
+## Options Available
+## Vector Database Strategy
+
+### Evaluated Options
+
+During the design phase of AgentRAG, two vector storage approaches were evaluated:
+
+#### Option 1: PostgreSQL + pgvector
+
+PostgreSQL can be extended with the pgvector extension to store and query vector embeddings directly within the database.
+
+Example installation:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
+
+Benefits:
+
+* Single database architecture
+* Simplified backup and maintenance
+* Suitable for small to medium-sized RAG applications
+
+Challenges:
+
+* Requires pgvector installation on the PostgreSQL server
+* Additional setup complexity on local Windows environments
+* Less specialized for large-scale vector search workloads
+
+#### Option 2: Qdrant (Selected)
+
+Qdrant is a dedicated vector database optimized for semantic search and Retrieval-Augmented Generation (RAG) workloads.
+
+Benefits:
+
+* Purpose-built for vector search
+* Fast similarity retrieval
+* Native filtering and metadata support
+* Excellent integration with AI frameworks such as LangChain and LangGraph
+* Easy local development using Docker
+
+### Selected Architecture
+
+AgentRAG uses:
+
+* PostgreSQL for users, documents, metadata, and document chunks
+* Qdrant for vector embeddings and semantic retrieval
+
+Architecture:
+
+User Upload
+↓
+Document Storage (PostgreSQL)
+↓
+Text Extraction
+↓
+Chunking
+↓
+Embedding Generation
+↓
+Qdrant Vector Storage
+↓
+Semantic Search
+↓
+LLM Response Generation
+
+This architecture was chosen to align with modern AI engineering practices and production-ready RAG systems.
+
+
+
+## Qdrant Vector Database Setup
+
+```bash
+# Start Qdrant using Docker
+docker run -d --name qdrant -p 6333:6333 qdrant/qdrant
 ```
 
 ## API Documentation
