@@ -144,6 +144,75 @@ npm install @qdrant/js-client-rest
 
 http://localhost:6333/dashboard
 
+## Ollama Local LLM Setup
+
+Ollama allows you to run large language models locally for privacy and cost efficiency.
+
+### Installation
+
+**Windows:**
+```bash
+# Download and install from https://ollama.com/download/windows
+# Or use winget:
+winget install Ollama.Ollama
+```
+
+**macOS:**
+```bash
+brew install ollama
+```
+
+**Linux:**
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+### Pull and Run a Model
+
+```bash
+# Pull a model (e.g., Llama 3.2)
+ollama pull llama3.2
+
+# Pull embedding model for RAG
+ollama pull nomic-embed-text
+
+# Run a model interactively
+ollama run llama3.2
+
+# List available models
+ollama list
+
+# View running models
+ollama ps
+```
+
+### Configure Ollama for AgentRAG
+
+Add the following environment variable to your `.env` file:
+
+```env
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2
+```
+
+### Ollama API
+
+Ollama provides a REST API at `http://localhost:11434` that is compatible with the OpenAI API format.
+
+**Example API call:**
+```bash
+curl http://localhost:11434/api/generate -d '{
+  "model": "llama3.2",
+  "prompt": "Why is the sky blue?"
+}'
+```
+
+### Recommended Models for RAG
+
+- **llama3.2** - Good balance of speed and quality
+- **mistral** - Lightweight and fast
+- **codellama** - Specialized for code-related tasks
+- **nomic-embed-text** - For generating embeddings (if not using external embedding service)
 
 ## API Documentation
 

@@ -6,9 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DocumentsModule } from './documents/documents.module';
 import { QdrantModule } from './qdrant/qdrant.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, UsersModule, DocumentsModule, QdrantModule],
+  imports: [PrismaModule, AuthModule, UsersModule, DocumentsModule, QdrantModule, AiModule],
   controllers: [AppController],
   providers: [AppService],
 })
