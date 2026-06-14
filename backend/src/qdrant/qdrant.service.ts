@@ -103,4 +103,27 @@ export class QdrantService implements OnModuleInit {
         );
     }
 
+    async search(embedding: number[], documentId: number, userId: number) {
+        const result = await this.client.search('documents_ollama', {
+            vector: embedding,
+            limit: 10,
+            filter: {
+                must: [
+                    {
+                        key: 'documentId',
+                        match: {
+                            value: documentId,
+                        },
+                    },
+                    {
+                        key: 'userId',
+                        match: {
+                            value: userId,
+                        },
+                    },
+                ],
+            },
+        });
+        return result;
+    }
 }
