@@ -5,10 +5,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import * as fs from 'fs';
 import path from 'path';
 import mammoth from 'mammoth';
+import { AiService } from 'src/ai/ai.service';
+import { QdrantService } from 'src/qdrant/qdrant.service';
 
 @Injectable()
 export class DocumentsService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(private readonly prisma: PrismaService, private readonly aiService: AiService, private readonly qdrantService: QdrantService) { }
 
     async uploadFile(file: File, userId: number) {
 
@@ -26,7 +28,7 @@ export class DocumentsService {
 
             // call extractContent to extract content from the document
 
-            const extractionResult = await this.extractContent(result.id);
+            const extractionResult = await this.extractContent(result.id,userId);
 
             if (!extractionResult.success) {
                 return {
@@ -63,7 +65,7 @@ export class DocumentsService {
         };
     }
 
-    async extractContent(documentId: number) {
+    async extractContent(documentId: number,userId: number) {
         try {
 
             // find the document
@@ -119,6 +121,25 @@ export class DocumentsService {
                     })),
                 });
 
+            for (const chunk of chunks) {
+
+                // generating Ai Chunks
+                const embedding = await this.aiService.generateEmbedding(
+                    chunk
+                );
+
+                await this.qdrantService.storeVector(
+                    embedding,
+                    {
+                        documentId,
+                        userId,
+                        chunkId: chunks.indexOf(chunk),
+                        content: chunk,
+                    },
+                );
+
+                // TODO: Store embedding in Qdrant
+            }
 
             return {
                 success: true,
@@ -225,6 +246,7 @@ export class DocumentsService {
                 id: documentId,
             },
         });
+        await this.qdrantService.deleteByDocumentId(documentId);
 
         return {
             success: true,

@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class EmbedDto {
     @ApiProperty({
         example: 'Hello world',
     })
-    text: String;
+    @IsString()
+    @IsNotEmpty()
+    text: string;
 }

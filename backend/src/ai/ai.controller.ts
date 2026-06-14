@@ -15,8 +15,8 @@ export class AiController {
     @ApiResponse({ status: 200, description: 'Embedding generated successfully' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiBody({ type: EmbedDto })
-    @Post('embed')
-    async embed(@Body() body: EmbedDto) {
-        return await this.aiService.generateEmbedding(body.text);
+    @Post('embedding')
+    async embed(@Body() req: EmbedDto) {
+        return await this.aiService.generateEmbedding(req.text);
     }
 }

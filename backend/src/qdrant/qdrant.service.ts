@@ -27,13 +27,17 @@ export class QdrantService implements OnModuleInit {
             collections.collections.some(
                 c => c.name === 'documents',
             );
+        const ollamaExists =
+            collections.collections.some(
+                c => c.name === 'documents_ollama',
+            );
 
         if (!exists) {
             await this.client.createCollection(
                 'documents',
                 {
                     vectors: {
-                        size: 1536,
+                        size: 1536,// for open ai 
                         distance: 'Cosine',
                     },
                 },
@@ -43,10 +47,60 @@ export class QdrantService implements OnModuleInit {
                 'Qdrant documents collection created',
             );
         }
+
+        if (!ollamaExists) {
+            await this.client.deleteCollection(
+                'documents_ollama',
+            );
+
+            await this.client.createCollection(
+                'documents_ollama',
+                {
+                    vectors: {
+                        size: 768,
+                        distance: 'Cosine',
+                    },
+                },
+            );
+            console.log(
+                'Qdrant documents_ollama collection created',
+            );
+        }
     }
 
     getClient(): QdrantClient {
         return this.client;
+    }
+
+    async storeVector(embedding: number[], payload: any) {
+        await this.client.upsert('documents_ollama', {
+            wait: true,
+            points: [
+                {
+                    id: Date.now(),
+                    vector: embedding,
+                    payload,
+                },
+            ],
+        });
+    }
+
+    async deleteByDocumentId(documentId: number) {
+        await this.client.delete(
+            'documents_ollama',
+            {
+                filter: {
+                    must: [
+                        {
+                            key: 'documentId',
+                            match: {
+                                value: documentId,
+                            },
+                        },
+                    ],
+                },
+            },
+        );
     }
 
 }
