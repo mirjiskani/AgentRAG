@@ -4,7 +4,7 @@ import { getToken } from '../lib/tokens-store';
 // let _token: string | null = null;
 
 const api = axios.create({
-  baseURL: import.meta.env.API_BASE_URL || 'http://localhost:3000/api',
+  baseURL: import.meta.env.API_BASE_URL || 'http://localhost:3001/api',
   headers: {
     'Content-Type': 'application/json',
   },
