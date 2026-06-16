@@ -8,22 +8,22 @@ import mammoth from 'mammoth';
 import { AiService } from 'src/ai/ai.service';
 import { QdrantService } from 'src/qdrant/qdrant.service';
 import { BusinessException, NotFoundException } from 'src/common/exceptions';
+import  DocumentsRepository from './repositories/documents.repository';
 
 @Injectable()
 export class DocumentsService {
-    constructor(private readonly prisma: PrismaService, private readonly aiService: AiService, private readonly qdrantService: QdrantService) { }
+    constructor(private documentRepository: DocumentsRepository, private readonly aiService: AiService, private readonly qdrantService: QdrantService) { }
 
     async uploadFile(file: File, userId: number) {
         try {
-            const result = await this.prisma.document.create({
-                data: {
+            const result =
+                await this.documentRepository.createDocument({
                     fileName: file.originalname,
                     filePath: file.path,
                     mimeType: file.mimetype,
                     size: file.size,
                     userId,
-                },
-            });
+                });
 
             // call extractContent to extract content from the document
             await this.extractContent(result.id, userId);
@@ -44,11 +44,7 @@ export class DocumentsService {
 
     async listDocuments(userId: number) {
         try {
-            const documents = await this.prisma.document.findMany({
-                where: {
-                    userId,
-                },
-            });
+            const documents = await this.documentRepository.findDocumentsByUserId(userId);
 
             return {
                 success: true,
@@ -60,15 +56,11 @@ export class DocumentsService {
         }
     }
 
-    async extractContent(documentId: number,userId: number) {
+    async extractContent(documentId: number, userId: number) {
         try {
 
             // find the document
-            const document = await this.prisma.document.findUnique({
-                where: {
-                    id: documentId,
-                },
-            });
+            const document = await this.documentRepository.findUniqueDocument(documentId);
 
             if (!document) {
                 throw new NotFoundException('Document not found');
@@ -106,13 +98,7 @@ export class DocumentsService {
             const chunks = this.chunkText(text);
 
             // create document chunks
-            const result =
-                await this.prisma.documentChunk.createMany({
-                    data: chunks.map((chunk) => ({
-                        documentId,
-                        content: chunk,
-                    })),
-                });
+            const result = await this.documentRepository.createDocumentChunks(documentId, chunks);
 
             for (const chunk of chunks) {
 
@@ -208,12 +194,7 @@ export class DocumentsService {
 
     async deleteDocument(documentId: number, userId: number) {
         try {
-            const document = await this.prisma.document.findFirst({
-                where: {
-                    id: documentId,
-                    userId,
-                },
-            });
+            const document = await this.documentRepository.findFirstDocument(documentId, userId);
 
             if (!document) {
                 throw new NotFoundException('Document not found');
@@ -225,12 +206,9 @@ export class DocumentsService {
                 fs.unlinkSync(fullPath);
             }
 
-            await this.prisma.document.delete({
-                where: {
-                    id: documentId,
-                },
-            });
-            await this.qdrantService.deleteByDocumentId(documentId);
+            await this.documentRepository.deleteDocument(documentId, userId);
+
+            await this.qdrantService.deleteByDocumentId(documentId,userId);
 
             return {
                 success: true,

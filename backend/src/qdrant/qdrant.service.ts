@@ -96,7 +96,7 @@ export class QdrantService implements OnModuleInit {
         }
     }
 
-    async deleteByDocumentId(documentId: number) {
+    async deleteByDocumentId(documentId: number, userId: number) {
         try {
             await this.client.delete(
                 'documents_ollama',
@@ -107,6 +107,12 @@ export class QdrantService implements OnModuleInit {
                                 key: 'documentId',
                                 match: {
                                     value: documentId,
+                                },
+                            },
+                            {
+                                key: 'userId',
+                                match: {
+                                    value: userId,
                                 },
                             },
                         ],
