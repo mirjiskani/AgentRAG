@@ -1,6 +1,6 @@
-import { FileText, Loader2, Plus, Trash2 } from "lucide-react";
+import { Check, Circle, FileText, Loader2, Plus, Trash2 } from "lucide-react";
 import { useDeleteDocument, useGetDocuments, useUploadDocument } from "../../hooks/documents";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function DocumentList() {
@@ -10,6 +10,7 @@ export default function DocumentList() {
   const allowedFileTypes = ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(null);
   
   useEffect(() => {
     if (error) {
@@ -49,6 +50,9 @@ export default function DocumentList() {
       const result = await deleteDocument(documentId);
       if (result?.success) {
         toast.success("Document deleted successfully");
+        if (selectedDocumentId === documentId) {
+          setSelectedDocumentId(null);
+        }
       }else{
         toast.error(result?.message || "Failed to delete document");
       }
@@ -56,6 +60,10 @@ export default function DocumentList() {
       console.error(error);
       toast.error("Failed to delete document");
     }
+  };
+
+  const onSelectDocument = (documentId: number) => {
+    setSelectedDocumentId(documentId === selectedDocumentId ? null : documentId);
   };
 
 
@@ -91,16 +99,16 @@ export default function DocumentList() {
 
         <div className="flex gap-3">
           <input placeholder="Search documents..." className="w-full border-2 border-gray-200 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />
-          <select className="w-full border-2 border-gray-200 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500">
+          {/* <select className="w-full border-2 border-gray-200 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500">
             <option value="">Filter by status</option>
             <option value="ALL">All</option>
             <option value="READY">Ready</option>
             <option value="PROCESSING">Processing</option>
-          </select>
+          </select> */}
         </div>
       </div>
 
-      <div className="p-4 space-y-3 overflow-y-auto h-[70vh]">
+      <div className="p-4 space-y-3 overflow-y-auto h-[70vh] custom-scrollbar">
         {isLoading && (
           <div className="flex items-center justify-center h-full">
             <Loader2 size={24} className="animate-spin" />
@@ -112,9 +120,18 @@ export default function DocumentList() {
           </div>
         )}
         {!isLoading && !isDeleting && documents?.data.map((doc) => (
-          
-            <div className="flex justify-between items-center p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 cursor-pointer transition hover:bg-gray-100 " key={doc.id}>
-              <div className="flex gap-3">
+
+            <div
+              className={`flex justify-between items-center p-4 border-2 rounded-lg cursor-pointer transition hover:bg-gray-100 ${selectedDocumentId === doc.id ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-500'}`}
+              key={doc.id}
+              onClick={() => onSelectDocument(doc.id)}
+            >
+              <div className="flex items-center gap-3">
+                {selectedDocumentId === doc.id ? (
+                  <Check size={20} className="text-green-600" />
+                ) : (
+                  <Circle size={20} className="text-gray-400" />
+                )}
                 <FileText size={20} />
 
                 <div>
@@ -124,17 +141,12 @@ export default function DocumentList() {
                 </div>
               </div>
 
-              <span
-                className={`text-md px-4 py-1 mx-2 rounded-full h-full ${doc.status === "READY"
-                    ? "bg-green-100 text-green-600"
-                    : "bg-yellow-100 text-yellow-600"
-                  }`}
-              >
-                {/* {doc.status} */} Pending
-              </span>
               <button
-                onClick={() => onDeleteDocument(doc.id)}
-                className="text-red-600 hover:text-red-800 cursor-pointer ml-auto"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteDocument(doc.id);
+                }}
+                className="text-red-600 hover:text-red-800 cursor-pointer"
               >
                 <Trash2 size={20} />
               </button>
