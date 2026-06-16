@@ -115,7 +115,7 @@ export class AuthService {
             // Generate access token for short term use
             const accessToken = await this.jwtService.signAsync(payload, {
                 secret: process.env.ACCESS_TOKEN_SECRET,
-                expiresIn: '15m', // 15 minutes
+                expiresIn: '1h', // 1 hour
             });
             // Generate refresh token for long term use
             const refreshToken = await this.jwtService.signAsync(payload, {
