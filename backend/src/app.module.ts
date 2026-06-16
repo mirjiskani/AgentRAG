@@ -8,9 +8,24 @@ import { DocumentsModule } from './documents/documents.module';
 import { QdrantModule } from './qdrant/qdrant.module';
 import { AiModule } from './ai/ai.module';
 import { ChatModule } from './chat/chat.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
-  imports: [PrismaModule, AuthModule, UsersModule, DocumentsModule, QdrantModule, AiModule, ChatModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    UsersModule,
+    DocumentsModule,
+    QdrantModule,
+    AiModule,
+    ChatModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 1 minute
+        limit: 100, // 100 requests per minute
+      },
+    ]),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

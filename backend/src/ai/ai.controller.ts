@@ -1,4 +1,5 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { AiService } from './ai.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -9,7 +10,8 @@ import { EmbedDto } from './dto/embed.dto';
 export class AiController {
     constructor(private readonly aiService: AiService) {}
     
-    @UseGuards(JwtAuthGuard)    
+    @UseGuards(JwtAuthGuard)
+    @Throttle({ default: { limit: 50, ttl: 60000 } }) // 50 embeddings per minute
     @ApiBearerAuth('access-token')
     @ApiOperation({ summary: 'Generate embedding for text' })
     @ApiResponse({ status: 200, description: 'Embedding generated successfully' })

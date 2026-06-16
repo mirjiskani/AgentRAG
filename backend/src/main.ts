@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { HttpExceptionFilter } from './common/filters';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,6 +25,12 @@ async function bootstrap() {
   // set global prefix
   app.setGlobalPrefix('api');
 
+  // enable API versioning
+  app.enableVersioning({
+    type: VersioningType.URI, // URI versioning (e.g., /api/v1/...)
+    defaultVersion: '1',
+  });
+
   // use cors for specific origin
 
    app.enableCors({
@@ -42,9 +49,14 @@ async function bootstrap() {
       scheme: 'bearer',
       bearerFormat: 'JWT',
       in: 'header',
-    },  
+    },
     'access-token',
-    ).build();
+    )
+    .addTag('Auth', 'Authentication endpoints')
+    .addTag('Documents', 'Document management endpoints')
+    .addTag('AI', 'AI and embedding endpoints')
+    .addTag('Chat', 'Chat with documents endpoints')
+    .build();
 
   const document =
     SwaggerModule.createDocument(

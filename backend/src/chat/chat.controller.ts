@@ -1,4 +1,5 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ChatService } from './chat.service';
 import ChatDto from './dto/chat.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -12,6 +13,7 @@ export class ChatController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Throttle({ default: { limit: 30, ttl: 60000 } }) // 30 chat requests per minute
     @ApiBearerAuth('access-token')
     @ApiOperation({ summary: 'Ask from AI about document' })
     @ApiResponse({ status: 200, description: 'Chat response generated successfully' })

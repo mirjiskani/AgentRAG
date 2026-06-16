@@ -1,4 +1,5 @@
 import { Controller, Delete, Get, Param, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { DocumentsService } from './documents.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from 'multer';
@@ -31,6 +32,7 @@ export class DocumentsController {
         },
     })
     @UseGuards(JwtAuthGuard)
+    @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 uploads per minute
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'
         , {
