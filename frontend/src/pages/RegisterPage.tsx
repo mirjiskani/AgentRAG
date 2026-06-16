@@ -28,6 +28,18 @@ export default function RegisterPage() {
   });
 
   const handleRegister = async () => {
+    if (!isEightChar || !confirmPassword) {
+      toast.error('Password must be at least 8 characters and match');
+      return;
+    }
+    if (!form.name || !form.email || !form.password || !form.confirmPassword) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    if(form.password !== form.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
     try {
       await registerMutation.mutate({
         name: form.name,
