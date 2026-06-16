@@ -4,75 +4,300 @@ AgentRAG is a full-stack AI platform that combines Retrieval-Augmented Generatio
 
 Built with React, NestJS, PostgreSQL, Qdrant, Ollama, and modern AI technologies, AgentRAG enables users to upload documents, extract and process content, generate vector embeddings, perform semantic retrieval, and interact with documents through AI-powered conversations.
 
-The platform is designed with a provider-agnostic architecture, supporting local AI models through Ollama today while allowing future integration with OpenAI, Anthropic, and other LLM providers.
+The platform is designed with a provider-agnostic architecture, supporting local AI models through Ollama today while allowing future integration with OpenAI, Anthropic, AWS Bedrock, and other LLM providers.
 
-## Current Features
+---
 
-* JWT Authentication & Refresh Tokens
-* Protected Routes & User-Based Access Control
-* Document Upload & Management
-* PDF, DOCX, and TXT Content Extraction
+# Features
+
+## Authentication & Security
+
+* JWT Authentication
+* Refresh Token Authentication
+* Protected Routes
+* User-Based Access Control
+
+## Document Management
+
+* Upload Documents
+* Delete Documents
+* Document Ownership Validation
+* User-Specific Document Isolation
+
+## Document Processing
+
+* PDF Text Extraction
+* DOCX Text Extraction
+* TXT File Processing
 * Intelligent Text Chunking
+
+## AI & Retrieval
+
 * Embedding Generation using Ollama (`nomic-embed-text`)
-* Vector Storage & Similarity Search using Qdrant
-* Semantic Retrieval with User & Document Filtering
-* Retrieval-Augmented Generation (RAG) Architecture
+* Vector Storage using Qdrant
+* Semantic Similarity Search
+* User & Document Scoped Retrieval
+* Context Construction from Retrieved Chunks
+* AI-Powered Question Answering using Llama 3
+* End-to-End Retrieval-Augmented Generation (RAG)
+
+## Developer Experience
+
 * Swagger API Documentation
+* Repository Pattern
+* Modular NestJS Architecture
+* Prisma ORM
 
-## Technology Stack
+---
 
-### Frontend
+# RAG Workflow
+
+## Document Indexing Pipeline
+
+```text
+Document Upload
+        ↓
+Content Extraction
+        ↓
+Text Chunking
+        ↓
+Embedding Generation
+        ↓
+Qdrant Vector Storage
+```
+
+## Question Answering Pipeline
+
+```text
+User Question
+        ↓
+Question Embedding
+        ↓
+Qdrant Semantic Search
+        ↓
+Retrieve Relevant Chunks
+        ↓
+Build Context
+        ↓
+Llama 3 Generation
+        ↓
+Context-Aware Answer
+```
+
+---
+
+# Technology Stack
+
+## Frontend
 
 * React
 * TypeScript
 * Tailwind CSS
+* React Router
 
-### Backend
+## Backend
 
 * NestJS
+* TypeScript
 * Prisma ORM
 * PostgreSQL
 
-### AI & Search
+## AI & Search
 
 * Ollama
 * Llama 3
 * nomic-embed-text
 * Qdrant Vector Database
 
-### Roadmap
+## Infrastructure
 
-* AI-Powered Document Chat
+* Docker
+* Docker Compose (Planned)
+
+---
+
+# Architecture
+
+```text
+Frontend (React)
+        │
+        ▼
+Backend API (NestJS)
+        │
+        ├── PostgreSQL
+        │
+        ├── Ollama
+        │      ├── nomic-embed-text
+        │      └── llama3
+        │
+        └── Qdrant
+```
+
+---
+
+# Current Project Status
+
+## ✅ Completed
+
+* Authentication & Authorization
+* Refresh Token Workflow
+* Protected Routes
+* Document Upload
+* Document Deletion
+* PDF Processing
+* DOCX Processing
+* TXT Processing
+* Text Chunking
+* Embedding Generation
+* Ollama Integration
+* Qdrant Integration
+* Vector Storage
+* Semantic Retrieval
+* AI Chat Generation
+* End-to-End RAG Pipeline
+* Repository Pattern Implementation
+* Swagger Documentation
+
+## 🚧 In Progress
+
+* Conversation History
+* Multi-Turn Conversations
+* Source Citations
+* Streaming Responses
+
+## 📌 Planned
+
 * Multi-Document Knowledge Bases
-* OpenAI Integration 
+* OpenAI Integration
 * AWS Deployment
-* AI Agents 
+* AI Agents
 * MCP (Model Context Protocol)
 * LangGraph Workflows
-* n8n Automations
+* n8n Automation
+* Evaluation & Monitoring
+* Multi-Model Support
 
-## Current Project Status
+---
 
-✅ Authentication & Authorization
+# Example Use Cases
 
-✅ Document Upload & Processing
+* Chat with PDFs
+* Resume Analysis
+* Internal Documentation Search
+* Knowledge Base Assistant
+* AI-Powered Question Answering
+* Semantic Document Search
+* Personal AI Assistant
 
-✅ Content Extraction & Chunking
+---
 
-✅ Embedding Generation
+# Local Development
 
-✅ Vector Storage in Qdrant
+## Prerequisites
 
-✅ Semantic Retrieval
+* Node.js
+* PostgreSQL
+* Docker
+* Ollama
 
-🚧 AI Chat Generation
+---
 
-🚧 Conversation History
+## Run Qdrant
 
-🚧 Multi-Document Chat
+```bash
+docker run -d --name qdrant -p 6333:6333 qdrant/qdrant
+```
 
-🚧 AWS Deployment
+Verify:
 
-🚧 MCP Integration
+```bash
+http://localhost:6333
+```
 
-🚧 LangGraph Integration
+---
+
+## Pull Ollama Models
+
+```bash
+ollama pull nomic-embed-text
+
+ollama pull llama3
+```
+
+Verify:
+
+```bash
+ollama list
+```
+
+---
+
+## Backend
+
+```bash
+npm install
+
+npm run start:dev
+```
+
+---
+
+## Frontend
+
+```bash
+npm install
+
+npm run dev
+```
+
+---
+
+# Roadmap
+
+## Phase 1 — Core RAG ✅
+
+* Authentication
+* Document Upload
+* Text Extraction
+* Chunking
+* Embeddings
+* Qdrant Integration
+* Semantic Search
+* AI-Powered Answers
+
+## Phase 2 — Advanced RAG 🚧
+
+* Conversation History
+* Multi-Turn Chat
+* Citations & Sources
+* Streaming Responses
+
+## Phase 3 — AI Engineering 📌
+
+* OpenAI Integration
+* AWS Deployment
+* AI Agents
+* MCP
+* LangGraph
+* n8n Workflows
+* Production Monitoring
+
+---
+
+# Author
+
+**Mir Khan**
+
+Senior Full-Stack Software Engineer
+
+Building AI-powered applications using:
+
+* RAG (Retrieval-Augmented Generation)
+* LLMs
+* Ollama
+* Qdrant
+* MCP
+* LangGraph
+* Modern Cloud Technologies
+
+Available for Full-Time Opportunities in Germany 🇩🇪
