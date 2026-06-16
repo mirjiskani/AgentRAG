@@ -5,11 +5,12 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { BusinessException, NotFoundException } from 'src/common/exceptions';
+import { AuthRepository } from './repositories/auth.repository';
 
 @Injectable()
 export class AuthService {
 
-    constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService) { }
+    constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService, private readonly authRepository: AuthRepository) { }
 
     // Generate password hash
     async hashPassword(password: string): Promise<string> {
@@ -36,11 +37,7 @@ export class AuthService {
             const hashedPassword = await this.hashPassword(registerDto.password);
 
             // find user by email
-            const findUser = await this.prisma.user.findUnique({
-                where: {
-                    email: registerDto.email,
-                },
-            });
+            const findUser = await this.authRepository.findUserByEmail(registerDto.email);
 
             // check if user already exists
             if (findUser) {
@@ -48,13 +45,8 @@ export class AuthService {
             }
 
             // create user
-            const user = await this.prisma.user.create({
-                data: {
-                    email: registerDto.email,
-                    name: registerDto.name,
-                    password: hashedPassword,
-                },
-            });
+            const user = await this.authRepository.createUser(registerDto.email, registerDto.name, hashedPassword);
+           
             return {
                 success: true,
                 message: 'User registered successfully',
@@ -77,11 +69,7 @@ export class AuthService {
     async login(loginDto: LoginDto) {
         try {
             // find user by email
-            const user = await this.prisma.user.findUnique({
-                where: {
-                    email: loginDto.email,
-                },
-            });
+            const user = await this.authRepository.findUserByEmail(loginDto.email);
 
             // check if user exists
             if (!user) {
@@ -99,14 +87,8 @@ export class AuthService {
 
             // Generate access token
             const tokens = await this.generateToken(payload);
-            await this.prisma.session.create({
-                data: {
-                    userId: user.id,
-                    refreshToken: tokens.refreshToken,
-                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-                },
-            });
-
+            // save token sesssions 
+            await this.authRepository.saveTokenSessions(user.id, tokens.refreshToken);
             return {
                 success: true,
                 message: 'User logged in successfully',
@@ -148,14 +130,7 @@ export class AuthService {
 
     async accessRefreshToken(refreshToken: string) {
         try {
-            const session = await this.prisma.session.findFirst({
-                where: {
-                    refreshToken: refreshToken,
-                },
-                include: {
-                    user: true,
-                },
-            });
+            const session = await this.authRepository.findByRefreshToken(refreshToken);
             if (!session) {
                 throw new BusinessException('Invalid refresh token');
             }
@@ -177,12 +152,7 @@ export class AuthService {
     // logout deletes the refresh token from the database
     async logout(refreshToken: string) {
         try {
-            await this.prisma.session.deleteMany({
-                where: {
-                    refreshToken: refreshToken,
-                },
-            });
-
+            await this.authRepository.deleteByRefreshToken(refreshToken);
             return {
                 success: true,
                 message: 'User logged out successfully',
