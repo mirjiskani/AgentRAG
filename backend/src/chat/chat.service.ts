@@ -23,7 +23,7 @@ export class ChatService {
             // Join the context from the search results
             const context = qdrantSearch.map((item) => item.payload?.content).join('\n\n');
             const generatedAnswer = await this.AiService.generateAnswer(context, question);
-            console.log(generatedAnswer)
+            // console.log(generatedAnswer)
             return {
                 success: true,
                 message: 'Chat response created',

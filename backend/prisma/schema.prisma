@@ -4,13 +4,9 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
-
-//generator client {
-//  provider      = "prisma-client-js"
-//  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
-//}
 
 datasource db {
   provider = "postgresql"
@@ -27,6 +23,7 @@ model User {
 
   sessions  Session[]
   documents Document[]
+  chatSessions ChatSession[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -62,6 +59,7 @@ model Document {
 
   // Add relation to document chunks
   chunks DocumentChunk[]
+  chatSessions ChatSession[]
 
   createdAt DateTime @default(now())
 }
@@ -78,4 +76,41 @@ model DocumentChunk {
   content String
 
   createdAt DateTime @default(now())
+}
+
+
+// chat session model structure
+// chat session model will have user id, document id, created at, updated at, user, document, messages
+
+model ChatSession {
+  id          Int      @id @default(autoincrement())
+
+  userId      Int
+  documentId  Int
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User      @relation(fields: [userId], references: [id])
+  document    Document  @relation(fields: [documentId], references: [id])
+
+  messages    ChatMessage[]
+
+  @@unique([userId, documentId])
+}
+
+// Chat message model structure
+// Chat message model will have chat session id, role, content, created at, session
+
+model ChatMessage {
+  id             Int      @id @default(autoincrement())
+
+  chatSessionId  Int
+
+  role           String
+  content        String
+
+  createdAt      DateTime @default(now())
+
+  session ChatSession @relation(fields: [chatSessionId], references: [id], onDelete: Cascade)
 }

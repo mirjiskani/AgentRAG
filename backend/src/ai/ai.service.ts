@@ -59,8 +59,6 @@ export class AiService {
                 );
 
             const data = await response.json();
-            console.log('data',data);
-
             return data.response;
         } catch (error) {
             if (error instanceof BusinessException) {
