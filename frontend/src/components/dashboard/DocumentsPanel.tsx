@@ -119,7 +119,7 @@ export default function DocumentList() {
             <Loader2 size={24} className="animate-spin" />
           </div>
         )}
-        {!isLoading && !isDeleting && documents?.data.map((doc) => (
+        {!isLoading && !isDeleting && documents?.data.map((doc:any) => (
 
             <div
               className={`flex justify-between items-center p-4 border-2 rounded-lg cursor-pointer transition hover:bg-gray-100 ${selectedDocumentId === doc.id ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-500'}`}

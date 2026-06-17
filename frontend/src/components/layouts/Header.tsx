@@ -2,7 +2,6 @@ import {
   Bell,
   Moon,
   Menu,
-  Plus,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 

@@ -3,7 +3,7 @@ import { refreshToken } from "../services/auth";
 import { setToken } from "../lib/tokens-store";
 
 interface authContextType {
-    accessToken:string,
+    accessToken:string | null,
     setAccessToken: (accessToken: string|null) => void;
     loading: boolean;
 }
