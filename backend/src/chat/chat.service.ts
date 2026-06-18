@@ -77,9 +77,7 @@ export class ChatService {
 
             // create chat message for the answer
 
-            // await this.chatRepository.createChatMessage(session.id, generatedAnswer, 'assistant');
-
-            // console.log(generatedAnswer)
+            await this.chatRepository.createChatMessage(session.id, generatedAnswer, 'assistant');
 
             return {
 
@@ -95,7 +93,7 @@ export class ChatService {
 
                     documentId: documentId,
 
-                    response: generatedAnswer
+                    content: generatedAnswer
 
                 }
 

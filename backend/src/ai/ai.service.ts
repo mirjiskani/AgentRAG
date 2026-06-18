@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BusinessException } from 'src/common/exceptions';
 
@@ -33,46 +33,51 @@ export class AiService {
     }
 
     async generateAnswer(context: string, question: string) {
-
         try {
-            const prompt = `Answer ONLY using the provided context.
-                            Context:
-                            ${context}
-                            Question:
-                            ${question}
-`;
-            const response =
-                await fetch(
-                    process.env.OLLAMA_URL + '/api/generate',
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type':
-                                'application/json',
-                        },
-                        body: JSON.stringify({
-                            model: process.env.OLLAMA_MODEL,
-                            prompt,
-                            stream: false,
-                        }),
-                        // @ts-ignore
-                        // signal: AbortSignal.timeout(120000), // 2 minute timeout
-                        signal: AbortSignal.timeout(300000)
+            const prompt = `
+                        Answer ONLY using the provided context.
+
+                        Context:
+                        ${context}
+
+                        Question:
+                        ${question}
+                        `;
+
+            const response = await fetch(
+                `${process.env.OLLAMA_URL}/api/generate`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
                     },
-                );
+                    body: JSON.stringify({
+                        model: process.env.OLLAMA_MODEL,
+                        prompt,
+                        stream: false,
+                        options: {
+                            num_predict: 300,
+                        },
+                    }),
+                    signal: AbortSignal.timeout(600000), // 10 minutes
+                },
+            );
 
             if (!response.ok) {
-                throw new BusinessException(`Ollama API error: ${response.statusText}`);
+                throw new Error(
+                    `Ollama API error: ${response.statusText}`,
+                );
             }
 
             const data = await response.json();
+
             return data.response;
         } catch (error) {
             console.error('AI Service Error:', error);
-            if (error instanceof BusinessException) {
-                throw error;
-            }
-            throw new BusinessException('Failed to generate AI response', error);
+
+            throw new InternalServerErrorException(
+                'Failed to generate AI response',
+            );
         }
     }
 }
