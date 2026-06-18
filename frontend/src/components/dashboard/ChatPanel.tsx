@@ -2,6 +2,8 @@ import { Send, Loader2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface ChatWindowProps {
   selectedDocumentId: number | null;
@@ -108,9 +110,12 @@ export default function ChatWindow({ selectedDocumentId }: ChatWindowProps) {
 
       <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
         {messages.map((msg, index) => (
+          console.log(msg.content),
           <div key={index} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             <div className={`${msg.role === "user" ? "bg-indigo-600 text-white" : "bg-gray-100"} px-4 py-3 rounded-xl max-w-lg`}>
-              {msg.content}
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {msg.content}
+              </ReactMarkdown>
             </div>
           </div>
         ))}

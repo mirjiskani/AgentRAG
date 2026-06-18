@@ -50,6 +50,25 @@ The platform is designed with a provider-agnostic architecture, supporting local
 * Repository Pattern
 * Modular NestJS Architecture
 * Prisma ORM
+* Jest Testing
+* Supertest E2E Testing
+
+---
+
+# Testing
+
+## Current Test Coverage
+
+### End-to-End (E2E)
+
+* Authentication API
+
+### Planned E2E Coverage
+
+* Document Upload API
+* Document Retrieval API
+* Chat API
+* Complete RAG Workflow
 
 ---
 
@@ -114,6 +133,11 @@ Persist Conversation History
 * nomic-embed-text
 * Qdrant Vector Database
 
+## Testing
+
+* Jest
+* Supertest
+
 ## Infrastructure
 
 * Docker
@@ -171,12 +195,16 @@ Backend API (NestJS)
 * End-to-End RAG Pipeline
 * Repository Pattern Implementation
 * Swagger Documentation
+* Jest Integration
+* Authentication E2E Testing
 
 ## 🚧 In Progress
 
 * Source Citations
 * Streaming Responses
 * Multi-Document Chat
+* Document Upload E2E Tests
+* Chat API E2E Tests
 
 ## 📌 Planned
 
@@ -264,6 +292,28 @@ npm run dev
 
 ---
 
+## Run Tests
+
+### Unit Tests
+
+```bash
+npm run test
+```
+
+### End-to-End Tests
+
+```bash
+npm run test:e2e
+```
+
+### Test Coverage
+
+```bash
+npm run test:cov
+```
+
+---
+
 # Roadmap
 
 ## Phase 1 — Core RAG ✅
@@ -280,8 +330,12 @@ npm run dev
 * Conversation History
 * Multi-Turn Conversations
 
-## Phase 2 — Advanced RAG 🚧
+## Phase 2 — Quality & Advanced RAG 🚧
 
+* Authentication E2E Tests
+* Document Upload E2E Tests
+* Chat API E2E Tests
+* Complete RAG Workflow E2E Tests
 * Source Citations
 * Streaming Responses
 * Multi-Document Chat
