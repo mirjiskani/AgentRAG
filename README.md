@@ -39,6 +39,9 @@ The platform is designed with a provider-agnostic architecture, supporting local
 * User & Document Scoped Retrieval
 * Context Construction from Retrieved Chunks
 * AI-Powered Question Answering using Llama 3
+* Persistent Chat Sessions
+* Conversation History Management
+* Multi-Turn Conversations
 * End-to-End Retrieval-Augmented Generation (RAG)
 
 ## Developer Experience
@@ -82,6 +85,8 @@ Build Context
 Llama 3 Generation
         ↓
 Context-Aware Answer
+        ↓
+Persist Conversation History
 ```
 
 ---
@@ -125,12 +130,18 @@ Frontend (React)
 Backend API (NestJS)
         │
         ├── PostgreSQL
+        │      ├── Users
+        │      ├── Documents
+        │      ├── Document Chunks
+        │      ├── Chat Sessions
+        │      └── Chat Messages
         │
         ├── Ollama
         │      ├── nomic-embed-text
         │      └── llama3
         │
         └── Qdrant
+               └── Vector Embeddings
 ```
 
 ---
@@ -154,20 +165,21 @@ Backend API (NestJS)
 * Vector Storage
 * Semantic Retrieval
 * AI Chat Generation
+* Chat Session Management
+* Conversation History
+* Multi-Turn Conversations
 * End-to-End RAG Pipeline
 * Repository Pattern Implementation
 * Swagger Documentation
 
 ## 🚧 In Progress
 
-* Conversation History
-* Multi-Turn Conversations
 * Source Citations
 * Streaming Responses
+* Multi-Document Chat
 
 ## 📌 Planned
 
-* Multi-Document Knowledge Bases
 * OpenAI Integration
 * AWS Deployment
 * AI Agents
@@ -264,23 +276,39 @@ npm run dev
 * Qdrant Integration
 * Semantic Search
 * AI-Powered Answers
+* Chat Sessions
+* Conversation History
+* Multi-Turn Conversations
 
 ## Phase 2 — Advanced RAG 🚧
 
-* Conversation History
-* Multi-Turn Chat
-* Citations & Sources
+* Source Citations
 * Streaming Responses
+* Multi-Document Chat
 
 ## Phase 3 — AI Engineering 📌
 
 * OpenAI Integration
 * AWS Deployment
 * AI Agents
-* MCP
+* MCP (Model Context Protocol)
 * LangGraph
 * n8n Workflows
 * Production Monitoring
+* Evaluation Frameworks
+
+---
+
+# Future AI Engineering Roadmap
+
+After completing AgentRAG:
+
+1. AWS Cloud & AI Infrastructure
+2. n8n Workflow Automation
+3. AI Agents
+4. MCP (Model Context Protocol)
+5. LangGraph
+6. Production AI Systems
 
 ---
 
