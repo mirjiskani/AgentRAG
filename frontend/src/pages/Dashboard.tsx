@@ -1,9 +1,12 @@
+import { useState } from "react";
 import Sidebar from "../components/layouts/Sidebar";
 import Header from "../components/layouts/Header";
 import DocumentList from "../components/dashboard/DocumentsPanel";
 import ChatWindow from "../components/dashboard/ChatPanel";
 
 export default function Dashboard() {
+  const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(null);
+
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
@@ -14,11 +17,11 @@ export default function Dashboard() {
         <main className="flex-1 overflow-auto p-3 md:p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6 h-full">
             <div className="col-span-1 md:col-span-2 lg:col-span-6">
-              <DocumentList />
+              <DocumentList selectedDocumentId={selectedDocumentId} onSelectDocument={setSelectedDocumentId} />
             </div>
 
             <div className="col-span-1 md:col-span-2 lg:col-span-6">
-              <ChatWindow />
+              <ChatWindow selectedDocumentId={selectedDocumentId} />
             </div>
           </div>
         </main>

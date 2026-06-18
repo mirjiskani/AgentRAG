@@ -1,16 +1,20 @@
 import { Check, Circle, FileText, Loader2, Plus, Trash2 } from "lucide-react";
 import { useDeleteDocument, useGetDocuments, useUploadDocument } from "../../hooks/documents";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 
-export default function DocumentList() {
+interface DocumentListProps {
+  selectedDocumentId: number | null;
+  onSelectDocument: (id: number | null) => void;
+}
+
+export default function DocumentList({ selectedDocumentId, onSelectDocument }: DocumentListProps) {
   const { data: documents, isLoading, error } = useGetDocuments();
   const { mutateAsync: uploadDocument, isPending: isUploading } = useUploadDocument();
   const { mutateAsync: deleteDocument, isPending: isDeleting } = useDeleteDocument();
   const allowedFileTypes = ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(null);
   
   useEffect(() => {
     if (error) {
@@ -51,7 +55,7 @@ export default function DocumentList() {
       if (result?.success) {
         toast.success("Document deleted successfully");
         if (selectedDocumentId === documentId) {
-          setSelectedDocumentId(null);
+          onSelectDocument(null);
         }
       }else{
         toast.error(result?.message || "Failed to delete document");
@@ -62,10 +66,9 @@ export default function DocumentList() {
     }
   };
 
-  const onSelectDocument = (documentId: number) => {
-    setSelectedDocumentId(documentId === selectedDocumentId ? null : documentId);
+  const handleSelectDocument = (documentId: number) => {
+    onSelectDocument(documentId === selectedDocumentId ? null : documentId);
   };
-
 
   return (
     <div className="bg-white rounded-xl border-2 border-gray-200 h-full">
@@ -124,7 +127,7 @@ export default function DocumentList() {
             <div
               className={`flex justify-between items-center p-4 border-2 rounded-lg cursor-pointer transition hover:bg-gray-100 ${selectedDocumentId === doc.id ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-500'}`}
               key={doc.id}
-              onClick={() => onSelectDocument(doc.id)}
+              onClick={() => handleSelectDocument(doc.id)}
             >
               <div className="flex items-center gap-3">
                 {selectedDocumentId === doc.id ? (
