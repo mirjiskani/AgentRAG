@@ -66,10 +66,23 @@ export default function ChatWindow({ selectedDocumentId }: ChatWindowProps) {
         documentId: selectedDocumentId,
       });
 
-      setMessages((prev) => [...prev, { role: "assistant", content: response.data.response }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: response.data.data.content,
+        },
+      ]);
     } catch (error) {
       console.error("Error sending message:", error);
-      setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, something went wrong. Please try again." }]);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "Sorry, something went wrong. Please try again.",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
