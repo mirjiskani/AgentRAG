@@ -4,6 +4,7 @@ import { ChatService } from './chat.service';
 import ChatDto from './dto/chat.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { HistoryDto } from './dto/history.dto';
 
 @ApiTags('Chat')
 @Controller('chat')
@@ -20,7 +21,7 @@ export class ChatController {
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @ApiBody({ type: ChatDto })
-    @Post('chat')
+    @Post('get-answer')
     async chat(@Body() chatDto: ChatDto,@Req() req) {
         return this.chatService.chat(
             req.user.userId,
@@ -29,6 +30,21 @@ export class ChatController {
         );
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Throttle({ default: { limit: 30, ttl: 60000 } }) // 30 chat requests per minute
+    @ApiBearerAuth('access-token')
+    @ApiOperation({ summary: 'Get chat history' })
+    @ApiResponse({ status: 200, description: 'Chat history retrieved successfully' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    @ApiBody({ type: HistoryDto })
+    @Post('get-history')
+    async getHistory(@Body() historyDto: HistoryDto,@Req() req) {
+        return this.chatService.getMessageHistory(
+            req.user.userId,
+            historyDto.documentId
+        );
+    }
 }
 
 

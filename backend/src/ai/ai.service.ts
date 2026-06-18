@@ -55,16 +55,24 @@ export class AiService {
                             prompt,
                             stream: false,
                         }),
+                        // @ts-ignore
+                        // signal: AbortSignal.timeout(120000), // 2 minute timeout
+                        signal: AbortSignal.timeout(300000)
                     },
                 );
+
+            if (!response.ok) {
+                throw new BusinessException(`Ollama API error: ${response.statusText}`);
+            }
 
             const data = await response.json();
             return data.response;
         } catch (error) {
+            console.error('AI Service Error:', error);
             if (error instanceof BusinessException) {
                 throw error;
             }
-            throw new BusinessException('Failed to generate AI response');
+            throw new BusinessException('Failed to generate AI response', error);
         }
     }
 }
