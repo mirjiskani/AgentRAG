@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { BusinessException, NotFoundException } from 'src/common/exceptions';
 import { AuthRepository } from './repositories/auth.repository';
+import { BusinessException } from 'src/common/exceptions';
 
 @Injectable()
 export class AuthService {
 
-    constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService, private readonly authRepository: AuthRepository) { }
+    constructor(private readonly jwtService: JwtService, private readonly authRepository: AuthRepository) { }
 
     // Generate password hash
     async hashPassword(password: string): Promise<string> {
