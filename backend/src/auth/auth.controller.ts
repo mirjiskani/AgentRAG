@@ -22,31 +22,45 @@ export class AuthController {
     @Post('login')
     async login(@Body() loginDto: LoginDto, @Res({passthrough: true}) res: Response) {
         const result = await this.authService.login(loginDto);
-        res.cookie(
-            'refresh_token',
-            result.refreshToken,
-            {
+        // Set httpOnly cookies for access and refresh tokens
+        const cookieOptions = {
             httpOnly: true,
-            sameSite: 'strict',
-            maxAge:
-                7 * 24 * 60 * 60 * 1000,
-            },
-        );
-        const { refreshToken, ...data } = result;
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production',
+        } as any;
+
+        res.cookie('access_token', result.accessToken, { ...cookieOptions, maxAge: 60 * 60 * 1000 }); // 1 hour
+        res.cookie('refresh_token', result.refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 }); // 7 days
+
+        const { refreshToken, accessToken, ...data } = result;
         return data;
     }
+
     @Post('refresh')
-    async refresh(@Body() refreshToken: string) {
-        return this.authService.accessRefreshToken(refreshToken);
+    async refresh(@Req() req: Request, @Res({passthrough: true}) res: Response) {
+        const refreshToken = req.cookies.refresh_token;
+        const result = await this.authService.accessRefreshToken(refreshToken);
+
+        const cookieOptions = {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production',
+        } as any;
+
+        res.cookie('access_token', result.accessToken, { ...cookieOptions, maxAge: 60 * 60 * 1000 });
+        res.cookie('refresh_token', result.refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+        return { success: true, message: 'Token refreshed' };
     }
     
-    // logout deletes the refresh token from the database and clears the cookie
+    // logout deletes the refresh token from the database and clears the cookies
     @Post('logout')
     async logout(@Res({passthrough: true}) res: Response,@Req() req: Request) {
         const refreshToken = req.cookies.refresh_token;
         const result = await this.authService.logout(refreshToken);
         if(result.success) {
             res.clearCookie('refresh_token');
+            res.clearCookie('access_token');
         }
         return result;
     }

@@ -4,7 +4,6 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useLogin } from "../hooks/userLogin";
 import toast from "react-hot-toast";
 import type { LoginData } from "../types/auth";
-import { setToken } from '../lib/tokens-store';
 import { useAuth } from '../context/authContext';
 
 export default function LoginPage() {
@@ -25,8 +24,8 @@ export default function LoginPage() {
       },
         {
           onSuccess: (response) => {
-            setAccessToken(response.accessToken);
-            setToken(response.accessToken);
+            // Backend sets httpOnly cookies; update local state to authenticated
+            setAccessToken('authenticated');
             toast.success(response.message);
             setTimeout(() => {
               navigate('/dashboard'); // Redirect to dashboard on successful login
