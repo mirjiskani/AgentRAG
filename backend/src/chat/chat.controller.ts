@@ -3,7 +3,7 @@ import { Throttle } from '@nestjs/throttler';
 import { ChatService } from './chat.service';
 import ChatDto from './dto/chat.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HistoryDto } from './dto/history.dto';
 
 @ApiTags('Chat')
@@ -15,7 +15,7 @@ export class ChatController {
 
     @UseGuards(JwtAuthGuard)
     @Throttle({ default: { limit: 30, ttl: 60000 } }) // 30 chat requests per minute
-    @ApiBearerAuth('access-token')
+    @ApiCookieAuth('access-token-cookie')
     @ApiOperation({ summary: 'Ask from AI about document' })
     @ApiResponse({ status: 200, description: 'Chat response generated successfully' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -32,7 +32,7 @@ export class ChatController {
 
     @UseGuards(JwtAuthGuard)
     @Throttle({ default: { limit: 30, ttl: 60000 } }) // 30 chat requests per minute
-    @ApiBearerAuth('access-token')
+    @ApiCookieAuth('access-token-cookie')
     @ApiOperation({ summary: 'Get chat history' })
     @ApiResponse({ status: 200, description: 'Chat history retrieved successfully' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })

@@ -3,7 +3,7 @@ import { Throttle } from '@nestjs/throttler';
 import { DocumentsService } from './documents.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from 'multer';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
@@ -14,7 +14,7 @@ import { diskStorage } from 'multer';
 export class DocumentsController {
     constructor(private readonly documentsService: DocumentsService) { }
 
-    @ApiBearerAuth('access-token')
+    @ApiCookieAuth('access-token-cookie')
     @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Upload a document' })
     @ApiResponse({ status: 201, description: 'Document uploaded successfully' })
@@ -60,7 +60,7 @@ export class DocumentsController {
 
 
     @UseGuards(JwtAuthGuard)
-    @ApiBearerAuth('access-token')
+    @ApiCookieAuth('access-token-cookie')
     @ApiOperation({ summary: 'List all documents for the authenticated user' })
     @ApiResponse({ status: 200, description: 'Documents retrieved successfully' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -72,7 +72,7 @@ export class DocumentsController {
     }
     
     @UseGuards(JwtAuthGuard)
-    @ApiBearerAuth('access-token')
+    @ApiCookieAuth('access-token-cookie')
     @ApiOperation({ summary: 'Delete a document by ID' })
     @ApiResponse({ status: 200, description: 'Document deleted successfully' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })

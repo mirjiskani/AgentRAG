@@ -43,15 +43,11 @@ async function bootstrap() {
     .setTitle('AgentRAG API')
     .setDescription('AgentRAG Backend APIs')
     .setVersion('1.0')
-    .addBearerAuth(
-    {
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-      in: 'header',
-    },
-    'access-token',
-    )
+    .addCookieAuth('access_token', {
+      type: 'apiKey',
+      in: 'cookie',
+      name: 'access_token',
+    }, 'access-token-cookie')
     .addTag('Auth', 'Authentication endpoints')
     .addTag('Documents', 'Document management endpoints')
     .addTag('AI', 'AI and embedding endpoints')
